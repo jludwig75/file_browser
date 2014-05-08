@@ -55,6 +55,11 @@ class Directory:
         fileName = self.GetAbsFilePath(path)
         os.unlink(fileName)
 
+    def rename(self, path, newName):
+        oldFileName = self.GetAbsFilePath(path)
+        newFileName = self.GetAbsFilePath(newName)
+        os.rename(oldFileName, newFileName)
+
     def GetAbsFilePath(self, entry):
         return string.join([self.GetAbsPath(), entry], '/')
     

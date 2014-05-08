@@ -2,6 +2,6 @@
 % if isDir:
 	<img src="images/folder.png"/> <a href="cd?path=${dirEntry}" onclick="onClickDirEntry('${dirEntry}');return false">${dirEntry}</a>
 % else:
-	<img src="images/file.jpg"/> ${dirEntry} <a href="download/${dirEntry}"><img src="images/download.png"/></a> <a href="delete/${dirEntry}" onclick="onClickDeleteEntry('${dirEntry}');return false"><img src="images/delete.png"></a>
+	<img src="images/file.jpg"/> <span style="cursor:pointer;" id="file_${dirEntry}"><span onclick="onClickFileName('${dirEntry}')">${dirEntry}</span></span> <a href="download/${dirEntry}"><img src="images/download.png"/></a> <a href="delete/${dirEntry}" onclick="onClickDeleteEntry('${dirEntry}');return false"><img src="images/delete.png"></a>
 % endif
 </p>

@@ -88,6 +88,15 @@ class FileBrowserController(object):
         self.delete_impl(dirEntry)
         return self.view.render_dir_view()
     delete_js.exposed = True
+    
+    def rename_view_js(self, dirEntry):
+        return self.view.render_rename_view(dirEntry)
+    rename_view_js.exposed = True
+    
+    def rename_js(self, dirEntry, newName):
+        self.dir.rename(dirEntry, newName)
+        return newName
+    rename_js.exposed = True
 
 
 tutconf = os.path.join(os.path.dirname(__file__), 'file_browser.conf')

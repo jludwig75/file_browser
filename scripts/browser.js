@@ -97,3 +97,63 @@ function hideUploadView()
 	xmlhttp.open("GET","hide_upload_js", true);
 	xmlhttp.send();
 }
+
+function onClickFileName(dirEntry)
+{
+	if(window.XMLHttpRequest)
+  	{// code for IE7+, Firefox, Chrome, Opera, Safari
+  		xmlhttp=new XMLHttpRequest();
+  	}
+	else
+  	{// code for IE6, IE5
+  		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  	}
+  	
+  	xmlhttp.onreadystatechange=function()
+  	{
+  		if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    	{
+    		document.getElementById("file_" + dirEntry).innerHTML=xmlhttp.responseText;
+    	}
+  	};
+  	
+	xmlhttp.open("GET","rename_view_js?dirEntry=" + dirEntry, true);
+	xmlhttp.send();
+}
+
+function genNewFileNameSpan(dirEntry)
+{
+	return "<span onclick=\"onClickFileName('" + dirEntry + "')\">" + dirEntry + "</span>";
+}
+
+function cancelRename(dirEntry)
+{
+	document.getElementById("file_" + dirEntry).innerHTML=genNewFileNameSpan(dirEntry);
+}
+
+function onRenameEntry(dirEntry)
+{
+	if(window.XMLHttpRequest)
+  	{// code for IE7+, Firefox, Chrome, Opera, Safari
+  		xmlhttp=new XMLHttpRequest();
+  	}
+	else
+  	{// code for IE6, IE5
+  		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  	}
+  	
+  	xmlhttp.onreadystatechange=function()
+  	{
+  		if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    	{
+    		div = document.getElementById("file_" + dirEntry); 
+    		div.innerHTML=genNewFileNameSpan(xmlhttp.responseText);
+    		div.setAttribute("id", "file_" + xmlhttp.responseText);
+    	}
+  	};
+  	
+  	newName = document.getElementById("file_" + dirEntry + "_newname").value;
+  	
+	xmlhttp.open("GET","rename_js?dirEntry=" + dirEntry + '&newName=' + newName, true);
+	xmlhttp.send();
+}
