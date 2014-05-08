@@ -29,14 +29,6 @@ class FileBrowserView(object):
         html += '/' + parts[-1]
         return html
     
-    def render_upload(self):
-        tmpl = lookup.get_template("upload.html")
-        return tmpl.render(view=self)
-    
-    def render_upload_button(self):
-        tmpl = lookup.get_template("upload_button.html")
-        return tmpl.render(view=self)
-    
     def render_dir_listing(self):
         tmpl = lookup.get_template("dir_listing.html")
         return tmpl.render(view=self, entries=self.dir.GetDirEntries())

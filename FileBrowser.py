@@ -47,16 +47,6 @@ class FileBrowserController(object):
         return self.view.render_upload()
     show_upload_js.exposed = True
 
-    def hide_upload_js(self):
-        return self.view.render_upload_button()
-    hide_upload_js.exposed = True
-
-    def show_upload_js(self):
-        txt = self.view.render_upload()
-        print 'returning "%s"' % txt
-        return txt
-    show_upload_js.exposed = True
-
     def download(self, path):
         return serve_file(self.dir.GetAbsFilePath(path), "application/x-download", "attachment")
     download.exposed = True

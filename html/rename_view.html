@@ -1,5 +1,5 @@
-<form>
-	File Name: <input id="file_${dirEntry}_newname" type="text" name="fileName" value="${dirEntry}">
-	<input type="submit" value="OK" onclick="onRenameEntry('${dirEntry}');return false">
+<form style="display:inline;">
+	<input id="file_${dirEntry}_newname" type="text" name="fileName" value="${dirEntry}">
+	<input type="submit" value="Rename" onclick="onRenameEntry('${dirEntry}');return false">
 	<input type="submit" value="Cancel" onclick="cancelRename('${dirEntry}');return false">
 </form>

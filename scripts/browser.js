@@ -54,48 +54,14 @@ function onClickDeleteEntry(entryName)
 
 function showUploadView()
 {
-	if(window.XMLHttpRequest)
-  	{// code for IE7+, Firefox, Chrome, Opera, Safari
-  		xmlhttp=new XMLHttpRequest();
-  	}
-	else
-  	{// code for IE6, IE5
-  		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-  	}
-  	
-  	xmlhttp.onreadystatechange=function()
-  	{
-  		if (xmlhttp.readyState==4 && xmlhttp.status==200)
-    	{
-    		document.getElementById("upload").innerHTML=xmlhttp.responseText;
-    	}
-  	};
-  	
-	xmlhttp.open("GET","show_upload_js", true);
-	xmlhttp.send();
+	document.getElementById("upload-form").style.display = "block";
+	document.getElementById("upload-button").style.display = "none";
 }
 
 function hideUploadView()
 {
-	if(window.XMLHttpRequest)
-  	{// code for IE7+, Firefox, Chrome, Opera, Safari
-  		xmlhttp=new XMLHttpRequest();
-  	}
-	else
-  	{// code for IE6, IE5
-  		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-  	}
-  	
-  	xmlhttp.onreadystatechange=function()
-  	{
-  		if (xmlhttp.readyState==4 && xmlhttp.status==200)
-    	{
-    		document.getElementById("upload").innerHTML=xmlhttp.responseText;
-    	}
-  	};
-  	
-	xmlhttp.open("GET","hide_upload_js", true);
-	xmlhttp.send();
+	document.getElementById("upload-form").style.display = "none";
+	document.getElementById("upload-button").style.display = "block";
 }
 
 function onClickFileName(dirEntry)
@@ -114,6 +80,7 @@ function onClickFileName(dirEntry)
   		if (xmlhttp.readyState==4 && xmlhttp.status==200)
     	{
     		document.getElementById("file_" + dirEntry).innerHTML=xmlhttp.responseText;
+		  	newName = document.getElementById("file_" + dirEntry + "_newname").focus();
     	}
   	};
   	

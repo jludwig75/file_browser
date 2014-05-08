@@ -3,7 +3,16 @@
 </div>
 <hr/>
 <div id="upload">
-	${view.render_upload_button()}
+	<div id="upload-button">
+		<a href=""><img src="images/upload.png"/ onclick="showUploadView();return false"></a> <a href="" onclick="showUploadView();return false">Upload a file</a>
+	</div>
+	<div id="upload-form" style="display:none;">
+		<form action="upload" method="post" enctype="multipart/form-data">
+			<input style="border:1px;background-color:lightgray" value="Upload File" type="file" name="myFile" />
+			<input type="submit" />
+			<button type="button" onclick="hideUploadView();return false">Cancel</button>
+		</form>
+	</div>
 </div>
 <hr/>
 <div id="listing">
