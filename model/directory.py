@@ -7,6 +7,17 @@ class DirectoryException(Exception):
     def __init__(self, msg):
         self.msg = msg
 
+class DirEntry:
+    def __init__(self, entryName, dir):
+        self.entryName = entryName
+        self.isdir = dir.isdir(self.entryName)
+        fullPath = dir.GetAbsFilePath(self.entryName)
+        st = os.lstat(fullPath)
+        self.size = st.st_size
+        self.accessTime = st.st_atime
+        self.modifyTime = st.st_mtime
+        self.createTime = st.st_ctime
+    
 class Directory:
     def __init__(self, baseDir):
         self.baseDir = baseDir
@@ -76,7 +87,10 @@ class Directory:
             dirEntries = [base + '\\..'] + dirEntries
         for i in range(len(dirEntries)):
             dirEntries[i] = dirEntries[i][len(base)+1:]
-        return dirEntries
+        entryObjects = []
+        for dirEntry in dirEntries:
+            entryObjects.append(DirEntry(dirEntry, self))
+        return entryObjects
     
     def mkdir(self, path):
         dirName = self.GetAbsFilePath(path)

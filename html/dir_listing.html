@@ -1,3 +1,17 @@
+<tr>
+	<th align="left" style="padding-left:10px;padding-right:10px">
+		Nanme
+	</th>
+	<th align="left" style="padding-left:10px;padding-right:10px">
+		Size
+	</th>
+	<th align="left" style="padding-left:10px;padding-right:10px">
+		Date Modified
+	</th>
+	<th align="left" style="padding-left:10px;padding-right:10px">
+		Date Created
+	</th>
+</tr>
 % for entry in entries:
-	<div class="dir-entry">${view.render_dir_entry(entry)}</div>
+	<span class="dir-entry">${view.render_dir_entry(entry)}</span>
 % endfor

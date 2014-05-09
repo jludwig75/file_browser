@@ -39,7 +39,7 @@ class FileBrowserView(object):
     
     def render_dir_entry(self, dirEntry):
         tmpl = lookup.get_template("dir_entry.html")
-        return tmpl.render(isDir=self.dir.isdir(dirEntry), dirEntry=dirEntry)
+        return tmpl.render(dirEntry=dirEntry)
     
     def render_rename_view(self, dirEntry):
         tmpl = lookup.get_template("rename_view.html")

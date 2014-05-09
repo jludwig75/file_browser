@@ -1,10 +1,26 @@
-<p>
-% if isDir:
-	<img src="images/folder.png"/> <a href="cd?path=${dirEntry}" onclick="onClickDirEntry('${dirEntry}');return false">${dirEntry}</a> 
-%	if dirEntry != '..':
-		<a href="delete/${dirEntry}" onclick="onClickDeleteEntry('${dirEntry}');return false"><img src="images/delete.png"></a>
+<% import time %>
+<tr>
+	<td style="padding-right:0px;padding-left:30px">
+% if dirEntry.isdir:
+	<img src="images/folder.png"/> <a href="cd?path=${dirEntry.entryName}" onclick="onClickDirEntry('${dirEntry.entryName}');return false">${dirEntry.entryName}</a> 
+%	if dirEntry.entryName != '..':
+		<a href="delete/${dirEntry.entryName}" onclick="onClickDeleteEntry('${dirEntry.entryName}');return false"><img src="images/delete.png"></a>
 %	endif
 % else:
-	<img src="images/file.jpg"/> <span style="cursor:pointer;" id="file_${dirEntry}"><span onclick="onClickFileName('${dirEntry}')">${dirEntry}</span></span> <a href="download/${dirEntry}"><img src="images/download.png"/></a> <a href="delete/${dirEntry}" onclick="onClickDeleteEntry('${dirEntry}');return false"><img src="images/delete.png"></a>
+	<img src="images/file.jpg"/> <span style="cursor:pointer;" id="file_${dirEntry.entryName}"><span onclick="onClickFileName('${dirEntry.entryName}')">${dirEntry.entryName}</span></span> <a href="download/${dirEntry.entryName}"><img src="images/download.png"/></a> <a href="delete/${dirEntry.entryName}" onclick="onClickDeleteEntry('${dirEntry.entryName}');return false"><img src="images/delete.png"></a>
 % endif
-</p>
+	</td>
+	<td align="right" style="padding-right:10px;padding-left:10px">
+		% if not dirEntry.isdir:
+			${"{:,.0f} bytes".format(dirEntry.size)}
+		% endif		
+	</td>
+	<td align="left" style="padding-right:10px;padding-left:10px">
+		<% t = time.localtime(long(dirEntry.modifyTime)) %>
+		${time.strftime("%m/%d/%Y %I:%M %p", t)}
+	</td>
+	<td style="padding-right:10px;padding-left:10px">
+		<% t = time.localtime(long(dirEntry.createTime)) %>
+		${time.strftime("%m/%d/%Y %I:%M %p", t)}
+	</td>
+</tr>
