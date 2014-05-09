@@ -108,12 +108,13 @@ class FileBrowserController(object):
     delete_js.exposed = True
     
     def rename_view_js(self, dirEntry):
-        return self.view.render_rename_view(dirEntry)
+        text = self.view.render_rename_view(dirEntry)
+        return str(text)
     rename_view_js.exposed = True
     
     def rename_js(self, dirEntry, newName):
         self.dir.rename(dirEntry, newName)
-        return newName
+        return self.view.render_dir_view()
     rename_js.exposed = True
     
     def mkdir_js(self, newName):

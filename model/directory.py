@@ -9,7 +9,7 @@ class DirectoryException(Exception):
 
 class DirEntry:
     def __init__(self, entryName, dir):
-        self.entryName = entryName
+        self.entryName = str(entryName)
         self.isdir = dir.isdir(self.entryName)
         fullPath = dir.GetAbsFilePath(self.entryName)
         st = os.lstat(fullPath)

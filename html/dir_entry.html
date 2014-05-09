@@ -2,11 +2,24 @@
 <tr>
 	<td style="padding-right:0px;padding-left:30px">
 % if dirEntry.isdir:
-		<img src="images/folder.png"/> <a href="cd?path=${dirEntry.entryName}" onclick="onClickDirEntry('${dirEntry.entryName}');return false">${dirEntry.entryName}</a> 
+		<img src="images/folder.png"/>
+		<a id="link_${dirEntry.entryName}" href="cd?path=${dirEntry.entryName}" onclick="onClickDirEntry('${dirEntry.entryName}');return false">
+			<span id="file_${dirEntry.entryName}">
+				${dirEntry.entryName}
+			</span>
+		</a> 
+%	if dirEntry.entryName != '..':
+		<a href="" onclick="onClickFileName('${dirEntry.entryName}', true);return false"><img src="images/rename.png"></a>
+%	endif
 % else:
-		<img src="images/file.jpg"/> <span style="cursor:pointer;" id="file_${dirEntry.entryName}"><span onclick="onClickFileName('${dirEntry.entryName}')">${dirEntry.entryName}</span></span>
+		<img src="images/file.jpg"/>
+		<span style="cursor:pointer;" id="file_${dirEntry.entryName}">
+			<span onclick="onClickFileName('${dirEntry.entryName}', false)">
+				${dirEntry.entryName}
+			</span>
+		</span>
 % endif
-%	if not dirEntry.isdir or dirEntry.entryName != '..':
+% if not dirEntry.isdir or dirEntry.entryName != '..':
 		<a href="download?path=${dirEntry.entryName}"><img src="images/download.png"/></a>
 		<a href="delete/${dirEntry.entryName}" onclick="onClickDeleteEntry('${dirEntry.entryName}');return false"><img src="images/delete.png"></a>
 % endif
