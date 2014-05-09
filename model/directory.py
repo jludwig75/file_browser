@@ -1,6 +1,7 @@
 import os
 import glob
 import string
+import shutil
 
 class DirectoryException(Exception):
     def __init__(self, msg):
@@ -54,6 +55,10 @@ class Directory:
     def unlink(self, path):
         fileName = self.GetAbsFilePath(path)
         os.unlink(fileName)
+        
+    def rmtree(self, path):
+        fileName = self.GetAbsFilePath(path)
+        shutil.rmtree(fileName)
 
     def rename(self, path, newName):
         oldFileName = self.GetAbsFilePath(path)
@@ -72,3 +77,7 @@ class Directory:
         for i in range(len(dirEntries)):
             dirEntries[i] = dirEntries[i][len(base)+1:]
         return dirEntries
+    
+    def mkdir(self, path):
+        dirName = self.GetAbsFilePath(path)
+        os.mkdir(dirName)

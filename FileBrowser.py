@@ -66,7 +66,10 @@ class FileBrowserController(object):
     cd_js.exposed = True
     
     def delete_impl(self, dirEntry):
-        self.dir.unlink(dirEntry)
+        if self.dir.isdir(dirEntry):
+            self.dir.rmtree(dirEntry)
+        else:
+            self.dir.unlink(dirEntry)
 
     def delete(self, dirEntry):
         self.delete_impl(dirEntry)
@@ -87,6 +90,11 @@ class FileBrowserController(object):
         self.dir.rename(dirEntry, newName)
         return newName
     rename_js.exposed = True
+    
+    def mkdir_js(self, newName):
+        self.dir.mkdir(newName)
+        return self.view.render_dir_view()
+    mkdir_js.exposed = True
 
 
 tutconf = os.path.join(os.path.dirname(__file__), 'file_browser.conf')
