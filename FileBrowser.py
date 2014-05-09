@@ -1,5 +1,6 @@
 import os
 import time
+from zipfile import ZipFile
 localDir = os.path.dirname(__file__)
 absDir = os.path.join(os.getcwd(), localDir)
 
@@ -10,6 +11,26 @@ cherrypy.config.update({'session_filter.on': True})
 
 from model.directory import *
 from view.filebrowser import *
+
+def zipdir(path, zip):
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            zip.write(os.path.join(root, file))
+
+def CreateZipOfDir(path):
+    parts = path.split('/')
+    zipFileName = parts[-1] + ".zip"
+    baseDir = string.join(parts[:-1], '/')
+    cwd = os.path.realpath('./')
+    zipsPath = os.path.join(cwd, 'zips')
+    zipFileName = os.path.join(zipsPath, zipFileName)
+    os.chdir(baseDir)
+    try:
+        with ZipFile(zipFileName, "w") as zip:
+            zipdir(parts[-1], zip)
+    finally:
+        os.chdir(cwd)
+    return zipFileName
 
 class FileBrowserController(object):
     
@@ -48,7 +69,11 @@ class FileBrowserController(object):
     show_upload_js.exposed = True
 
     def download(self, path):
-        return serve_file(self.dir.GetAbsFilePath(path), "application/x-download", "attachment")
+        if self.dir.isdir(path):
+            zipFileName = CreateZipOfDir(self.dir.GetAbsFilePath(path))
+            return serve_file(os.path.realpath(zipFileName), "application/x-download", "attachment")
+        else:
+            return serve_file(self.dir.GetAbsFilePath(path), "application/x-download", "attachment")
     download.exposed = True
     
     def cd_impl(self, path):
