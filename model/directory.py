@@ -11,6 +11,7 @@ class DirEntry:
     def __init__(self, entryName, dir):
         self.entryName = str(entryName)
         self.isdir = dir.isdir(self.entryName)
+        self.isfile = not self.isdir    # Only used for sorting with directories first
         fullPath = dir.GetAbsFilePath(self.entryName)
         st = os.lstat(fullPath)
         self.size = st.st_size

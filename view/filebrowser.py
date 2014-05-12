@@ -1,4 +1,5 @@
 import string
+from operator import attrgetter
 
 from mako.template import Template
 from mako.lookup import TemplateLookup
@@ -31,7 +32,9 @@ class FileBrowserView(object):
     
     def render_dir_listing(self):
         tmpl = lookup.get_template("dir_listing.html")
-        return tmpl.render(view=self, entries=self.dir.GetDirEntries())
+        dirEntries = self.dir.GetDirEntries()
+        dirEntries = sorted(dirEntries, key=attrgetter('isfile', 'entryName'))
+        return tmpl.render(view=self, entries=dirEntries)
         
     def render_dir_view(self):
         tmpl = lookup.get_template("dir_view.html")
