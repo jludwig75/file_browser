@@ -1,6 +1,6 @@
 <% import time %>
-<tr>
-	<td style="padding-right:0px;padding-left:30px">
+<tr style="margin:0px;border:0px;padding:0px">
+	<td style="border:0px;margin:0px;padding-left:10px;padding-right:30px">
 % if dirEntry.isdir:
 		<img src="images/folder.png"/>
 		<a id="link_${dirEntry.entryName}" href="cd?path=${dirEntry.entryName}" onclick="onClickDirEntry('${dirEntry.entryName}');return false" title="Change to &quot;${dirEntry.entryName}&quot; directory">
@@ -24,16 +24,16 @@
 		<a href="delete/${dirEntry.entryName}" onclick="onClickDeleteEntry('${dirEntry.entryName}');return false" title="Delete"><img src="images/delete.png"></a>
 % endif
 	</td>
-	<td align="right" style="padding-right:10px;padding-left:10px">
+	<td align="right" style="margin:0px;border:0px;padding-left:10px;padding-right:10px">
 		% if not dirEntry.isdir:
 			${"{:,.0f} bytes".format(dirEntry.size)}
 		% endif		
 	</td>
-	<td align="left" style="padding-right:10px;padding-left:10px">
+	<td align="left" style="margin:0px;border:0px;padding-left:5px;padding-right:10px">
 		<% t = time.localtime(long(dirEntry.modifyTime)) %>
 		${time.strftime("%m/%d/%Y %I:%M %p", t)}
 	</td>
-	<td style="padding-right:10px;padding-left:10px">
+	<td style="margin:0px;border:0px;padding-right:5px;padding-left:10px">
 		<% t = time.localtime(long(dirEntry.createTime)) %>
 		${time.strftime("%m/%d/%Y %I:%M %p", t)}
 	</td>
