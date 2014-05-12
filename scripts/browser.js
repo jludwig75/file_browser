@@ -1,7 +1,13 @@
+function displayPleaseWait(message)
+{
+	document.getElementById("path").innerHTML = message;
+	document.getElementById("listing").innerHTML = message;
+}
+
 function onClickDirEntry(entryName)
 {
-	document.getElementById("path").innerHTML= "Changing to '"  + entryName + "'directory...";
-	document.getElementById("listing").innerHTML= "Please wait...";
+	var cdTimeOut = setTimeout(function(){displayPleaseWait("Please wait. Changing to '"  + entryName + "' directory...");}, 250);
+	
 	if(window.XMLHttpRequest)
   	{// code for IE7+, Firefox, Chrome, Opera, Safari
   		xmlhttp=new XMLHttpRequest();
@@ -15,6 +21,7 @@ function onClickDirEntry(entryName)
   	{
   		if (xmlhttp.readyState==4 && xmlhttp.status==200)
     	{
+    		window.clearTimeout(cdTimeOut);
     		document.getElementById("dir_view").innerHTML=xmlhttp.responseText;
     	}
   	};
@@ -29,8 +36,9 @@ function onClickDeleteEntry(entryName)
 	{
 		return;
 	}
-	document.getElementById("path").innerHTML= "Deleting file '"  + entryName + "'...";
-	document.getElementById("listing").innerHTML= "Please wait...";
+
+	var cdTimeOut = setTimeout(function(){document.getElementById("entry_" + entryName).innerHTML = "Please wait, deleting entry...";}, 250);
+	
 	if(window.XMLHttpRequest)
   	{// code for IE7+, Firefox, Chrome, Opera, Safari
   		xmlhttp=new XMLHttpRequest();
@@ -44,6 +52,7 @@ function onClickDeleteEntry(entryName)
   	{
   		if (xmlhttp.readyState==4 && xmlhttp.status==200)
     	{
+    		window.clearTimeout(cdTimeOut);
     		document.getElementById("dir_view").innerHTML=xmlhttp.responseText;
     	}
   	};
@@ -118,6 +127,10 @@ function cancelRename(dirEntry)
 
 function onRenameEntry(dirEntry, isdir)
 {
+  	newName = document.getElementById("file_" + dirEntry + "_newname").value;
+  	
+	var cdTimeOut = setTimeout(function(){document.getElementById("entry_" + dirEntry).innerHTML = "Please wait, renaming file...";}, 250);
+	
 	if(window.XMLHttpRequest)
   	{// code for IE7+, Firefox, Chrome, Opera, Safari
   		xmlhttp=new XMLHttpRequest();
@@ -131,11 +144,10 @@ function onRenameEntry(dirEntry, isdir)
   	{
   		if (xmlhttp.readyState==4 && xmlhttp.status==200)
     	{
+    		window.clearTimeout(cdTimeOut);
     		document.getElementById("dir_view").innerHTML=xmlhttp.responseText;
     	}
   	};
-  	
-  	newName = document.getElementById("file_" + dirEntry + "_newname").value;
   	
 	xmlhttp.open("GET","rename_js?dirEntry=" + dirEntry + "&newName=" + newName, true);
 	xmlhttp.send();
@@ -143,6 +155,10 @@ function onRenameEntry(dirEntry, isdir)
 
 function createFolder(folderName)
 {
+  	newName = document.getElementById("new-folder-name").value;
+  	
+	var cdTimeOut = setTimeout(function(){displayPleaseWait("Please wait. Creating folder '"  + newName + "'...");}, 250);
+	
 	if(window.XMLHttpRequest)
   	{// code for IE7+, Firefox, Chrome, Opera, Safari
   		xmlhttp=new XMLHttpRequest();
@@ -156,11 +172,10 @@ function createFolder(folderName)
   	{
   		if (xmlhttp.readyState==4 && xmlhttp.status==200)
     	{
+    		window.clearTimeout(cdTimeOut);
     		document.getElementById("dir_view").innerHTML=xmlhttp.responseText;
     	}
   	};
-  	
-  	newName = document.getElementById("new-folder-name").value;
   	
 	xmlhttp.open("GET", "mkdir_js?newName=" + newName, true);
 	xmlhttp.send();

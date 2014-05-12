@@ -1,6 +1,7 @@
 <% import time %>
 <tr style="margin:0px;border:0px;padding:0px">
 	<td style="border:0px;margin:0px;padding-left:10px;padding-right:30px">
+		<div id="entry_${dirEntry.entryName}">
 % if dirEntry.isdir:
 		<img src="images/folder.png"/>
 		<a id="link_${dirEntry.entryName}" href="cd?path=${dirEntry.entryName}" onclick="onClickDirEntry('${dirEntry.entryName}');return false" title="Change to &quot;${dirEntry.entryName}&quot; directory">
@@ -23,6 +24,7 @@
 		<a href="download?path=${dirEntry.entryName}" title="Download"><img src="images/download.png"/></a>
 		<a href="delete/${dirEntry.entryName}" onclick="onClickDeleteEntry('${dirEntry.entryName}');return false" title="Delete"><img src="images/delete.png"></a>
 % endif
+		</div>
 	</td>
 	<td align="right" style="margin:0px;border:0px;padding-left:10px;padding-right:10px">
 		% if not dirEntry.isdir:

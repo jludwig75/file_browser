@@ -77,7 +77,7 @@ class FileBrowserController(object):
     download.exposed = True
     
     def cd_impl(self, path):
-        #time.sleep(0.5)
+        #time.sleep(1.5)
         self.dir.cd(path)
     
     def cd(self, path):
@@ -91,6 +91,7 @@ class FileBrowserController(object):
     cd_js.exposed = True
     
     def delete_impl(self, dirEntry):
+        #time.sleep(5)
         if self.dir.isdir(dirEntry):
             self.dir.rmtree(dirEntry)
         else:
@@ -108,16 +109,19 @@ class FileBrowserController(object):
     delete_js.exposed = True
     
     def rename_view_js(self, dirEntry):
+        #time.sleep(1.5)
         text = self.view.render_rename_view(dirEntry)
         return str(text)
     rename_view_js.exposed = True
     
     def rename_js(self, dirEntry, newName):
+        #time.sleep(1.5)
         self.dir.rename(dirEntry, newName)
         return self.view.render_dir_view()
     rename_js.exposed = True
     
     def mkdir_js(self, newName):
+        #time.sleep(1.5)
         self.dir.mkdir(newName)
         return self.view.render_dir_view()
     mkdir_js.exposed = True

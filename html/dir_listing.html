@@ -1,17 +1,19 @@
-<tr style="margin:0px;border:0px;padding:0px">
-	<th align="left" style="margin:0px;border:0px;padding-left:10px;padding-right:10px" bgcolor="lightgray">
-		Name
-	</th>
-	<th align="left" style="margin:0px;border:0px;padding-left:10px;padding-right:10px" bgcolor="lightgray">
-		Size
-	</th>
-	<th align="left" style="margin:0px;border:0px;padding-left:10px;padding-right:10px" bgcolor="lightgray">
-		Date Modified
-	</th>
-	<th align="left" style="margin:0px;border:0px;padding-left:10px;padding-right:10px" bgcolor="lightgray">
-		Date Created
-	</th>
-</tr>
-% for entry in entries:
-	<span class="dir-entry">${view.render_dir_entry(entry)}</span>
-% endfor
+<table  style="margin:0px;border:0px;padding:0px">
+	<tr style="margin:0px;border:0px;padding:0px">
+		<th align="left" style="margin:0px;border:0px;padding-left:10px;padding-right:10px" bgcolor="lightgray">
+			Name
+		</th>
+		<th align="left" style="margin:0px;border:0px;padding-left:10px;padding-right:10px" bgcolor="lightgray">
+			Size
+		</th>
+		<th align="left" style="margin:0px;border:0px;padding-left:10px;padding-right:10px" bgcolor="lightgray">
+			Date Modified
+		</th>
+		<th align="left" style="margin:0px;border:0px;padding-left:10px;padding-right:10px" bgcolor="lightgray">
+			Date Created
+		</th>
+	</tr>
+	% for entry in entries:
+		<span class="dir-entry">${view.render_dir_entry(entry)}</span>
+	% endfor
+</table>
