@@ -48,3 +48,6 @@ class FileBrowserView(object):
         tmpl = lookup.get_template("rename_view.html")
         return tmpl.render(dirEntry=dirEntry)
 
+    def render_login_view(self):
+        tmpl = lookup.get_template("login.html")
+        return tmpl.render()

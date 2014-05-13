@@ -11,6 +11,7 @@ cherrypy.config.update({'session_filter.on': True})
 
 from model.directory import *
 from view.filebrowser import *
+from model.user import *
 
 def zipdir(path, zip):
     for root, dirs, files in os.walk(path):
@@ -125,6 +126,18 @@ class FileBrowserController(object):
         self.dir.mkdir(newName)
         return self.view.render_dir_view()
     mkdir_js.exposed = True
+    
+    def login(self):
+        return self.view.render_login_view()
+    login.exposed = True
+    
+    def signup(self, username, password, email):
+        try:
+            user = User.create(username, password, email)
+            return "OK"
+        except UserException, e:
+            return e.message
+    signup.exposed = True
 
 
 tutconf = os.path.join(os.path.dirname(__file__), 'file_browser.conf')
