@@ -139,6 +139,15 @@ class FileBrowserController(object):
             return e.message
     signup.exposed = True
 
+    def authenticate(self, username, password):
+        try:
+            user = User(username)
+            if user.authenticate(password):
+                return "OK"
+        except UserException, e:
+            pass
+        return "Unknown user name or password"
+    authenticate.exposed = True
 
 tutconf = os.path.join(os.path.dirname(__file__), 'file_browser.conf')
 

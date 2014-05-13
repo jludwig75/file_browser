@@ -5,6 +5,8 @@
 	<body>
 		<div id="login">
 			<h2>Login as Existing User</h2>
+			<div id="login-messages" style="display:none">
+			</div>
 			<form>
 				<table>
 					<tr>
@@ -12,7 +14,7 @@
 							User Name:
 						</td>
 						<td>
-							<input type="text" name="username"><br>
+							<input id="username" type="text" name="username"><br>
 						</td>
 					</tr>
 					<tr>
@@ -20,12 +22,12 @@
 							Password:
 						</td>
 						<td>
-							<input type="password" name="password"><br>
+							<input id="password" type="password" name="password"><br>
 						</td>
 					</tr>
 					<tr>
 						<td colspan="2">
-							<input type="submit" value="Login" onclick="return false">
+							<input type="submit" value="Login" onclick="authenticate();return false">
 						</td>
 					</tr>
 				</table>
