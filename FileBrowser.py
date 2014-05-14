@@ -33,24 +33,49 @@ def CreateZipOfDir(path):
         os.chdir(cwd)
     return zipFileName
 
+class UserData:
+    def __init__(self, user_id):
+        self.user_id = user_id
+        self.dir = Directory('/datastore')
+        self.cwd = ''
+        self.user = None
+    
+    def GetUser(self):
+        if not self.user:
+            self.user = User(self.user_id)
+        return self.user
+        
 class FileBrowserController(object):
     
     def __init__(self):
-        self.dir = Directory('/datastore')
         self.view = FileBrowserView(self)
+        self.user_data = {}
 
+    def GetUserData(self):
+        user_id = cherrypy.session.get('user_id')
+        if not user_id:
+            print "No current user ID"
+            return None
+        print "Current used ID: %s" % user_id
+        if not self.user_data.has_key(user_id):
+            self.user_data[user_id] = UserData(user_id)
+        return self.user_data[user_id]
+    
+    def ClearUserData(self):
+        user_id = cherrypy.session.get('user_id')
+        if user_id:
+            del self.user_data[user_id]
+        
     def index(self):
-        if not cherrypy.session.get('cwd'):
-            cherrypy.session['cwd'] = ''
-        dir = cherrypy.session.get('cwd')
-        if dir and len(dir) > 0:
-            self.dir.cd(dir)
-            
+        user_data = self.GetUserData()
+        if not user_data:
+            raise cherrypy.HTTPRedirect("/login")
+        
         return self.view.render_index()
     index.exposed = True
     
     def upload(self, myFile):
-        newFileName = self.dir.GetAbsFilePath(myFile.filename)
+        newFileName = self.GetUserData().dir.GetAbsFilePath(myFile.filename)
         f = open(newFileName, 'wb')
 
         size = 0
@@ -70,16 +95,16 @@ class FileBrowserController(object):
     show_upload_js.exposed = True
 
     def download(self, path):
-        if self.dir.isdir(path):
-            zipFileName = CreateZipOfDir(self.dir.GetAbsFilePath(path))
+        if self.GetUserData().dir.isdir(path):
+            zipFileName = CreateZipOfDir(self.GetUserData().dir.GetAbsFilePath(path))
             return serve_file(os.path.realpath(zipFileName), "application/x-download", "attachment")
         else:
-            return serve_file(self.dir.GetAbsFilePath(path), "application/x-download", "attachment")
+            return serve_file(self.GetUserData().dir.GetAbsFilePath(path), "application/x-download", "attachment")
     download.exposed = True
     
     def cd_impl(self, path):
         #time.sleep(1.5)
-        self.dir.cd(path)
+        self.GetUserData().dir.cd(path)
     
     def cd(self, path):
         self.cd_impl(path)
@@ -93,10 +118,10 @@ class FileBrowserController(object):
     
     def delete_impl(self, dirEntry):
         #time.sleep(5)
-        if self.dir.isdir(dirEntry):
-            self.dir.rmtree(dirEntry)
+        if self.GetUserData().dir.isdir(dirEntry):
+            self.GetUserData().dir.rmtree(dirEntry)
         else:
-            self.dir.unlink(dirEntry)
+            self.GetUserData().dir.unlink(dirEntry)
 
     def delete(self, dirEntry):
         self.delete_impl(dirEntry)
@@ -117,13 +142,13 @@ class FileBrowserController(object):
     
     def rename_js(self, dirEntry, newName):
         #time.sleep(1.5)
-        self.dir.rename(dirEntry, newName)
+        self.GetUserData().dir.rename(dirEntry, newName)
         return self.view.render_dir_view()
     rename_js.exposed = True
     
     def mkdir_js(self, newName):
         #time.sleep(1.5)
-        self.dir.mkdir(newName)
+        self.GetUserData().dir.mkdir(newName)
         return self.view.render_dir_view()
     mkdir_js.exposed = True
     
@@ -143,11 +168,19 @@ class FileBrowserController(object):
         try:
             user = User(username)
             if user.authenticate(password):
+                self.current_user_id = user.user_id
+                cherrypy.session['user_id'] = user.user_id
                 return "OK"
         except UserException, e:
             pass
         return "Unknown user name or password"
     authenticate.exposed = True
+    
+    def logout(self):
+        cherrypy.session['user_id'] = None
+        self.ClearUserData()
+        raise cherrypy.HTTPRedirect("/")
+    logout.exposed = True
 
 tutconf = os.path.join(os.path.dirname(__file__), 'file_browser.conf')
 
