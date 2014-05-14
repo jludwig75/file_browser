@@ -153,6 +153,9 @@ class FileBrowserController(object):
     mkdir_js.exposed = True
     
     def login(self):
+        user_data = self.GetUserData()
+        if user_data:
+            raise cherrypy.HTTPRedirect("/")
         return self.view.render_login_view()
     login.exposed = True
     
