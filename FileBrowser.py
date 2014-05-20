@@ -33,49 +33,79 @@ def CreateZipOfDir(path):
         os.chdir(cwd)
     return zipFileName
 
-class UserData:
-    def __init__(self, user_id):
-        self.user_id = user_id
-        self.dir = Directory('/datastore')
-        self.cwd = ''
+class SessionData:
+    def __init__(self):
         self.user = None
+        self.dir = None
     
+    def SetUserId(self, user_id):
+        self.ClearUserId()
+        cherrypy.session.get['user_id'] = user_id
+        
     def GetUser(self):
-        if not self.user:
-            self.user = User(self.user_id)
+        if self.user:
+            print 'Returning user %d' % self.user.user_id
+            return self.user;
+        if not cherrypy.session.get('user_id'):
+            print 'No user set'
+            return None
+        print 'Creating new user object for user %d' % cherrypy.session.get('user_id') 
+        self.user = User(cherrypy.session.get('user_id'))
+        print 'Returning user %d' % self.user.user_id
         return self.user
+    
+    def ClearUser(self):
+        cherrypy.session.pop('user_id')
+        self.user = None
+        self.dir = None
+    
+    def GetDir(self):
+        if not self.GetUser():
+            self.dir = None
+            return None
+        if self.dir:
+            return self.dir
+        self.dir = Directory('/datastore')
+        return self.dir
+
+session_data = {}
+
+def GetSessionData():
+    session_id = cherrypy.session.id
+    if not session_data.has_key(session_id):
+        session_data[session_id] = SessionData()
+    return session_data[session_id]
+
+def ClearSessionData():
+    session_id = cherrypy.session.id
+    if session_data.has_key(session_id):
+        del session_data[session_id]
+        
+def GetUserData():
+    return GetSessionData().GetUser()
+        
         
 class FileBrowserController(object):
     
     def __init__(self):
         self.view = FileBrowserView(self)
         self.user_data = {}
-
-    def GetUserData(self):
-        user_id = cherrypy.session.get('user_id')
-        if not user_id:
-            print "No current user ID"
-            return None
-        print "Current used ID: %s" % user_id
-        if not self.user_data.has_key(user_id):
-            self.user_data[user_id] = UserData(user_id)
-        return self.user_data[user_id]
-    
-    def ClearUserData(self):
-        user_id = cherrypy.session.get('user_id')
-        if user_id:
-            del self.user_data[user_id]
         
+    def GetDir(self):
+        return GetSessionData().GetDir()
+    
+    def GetUser(self):
+        return GetSessionData().GetUser()
+
     def index(self):
-        user_data = self.GetUserData()
-        if not user_data:
+        if not self.GetUser():
             raise cherrypy.HTTPRedirect("/login")
         
         return self.view.render_index()
     index.exposed = True
     
     def upload(self, myFile):
-        newFileName = self.GetUserData().dir.GetAbsFilePath(myFile.filename)
+        newFileName = self.GetDir().GetAbsFilePath(myFile.filename)
         f = open(newFileName, 'wb')
 
         size = 0
@@ -95,16 +125,16 @@ class FileBrowserController(object):
     show_upload_js.exposed = True
 
     def download(self, path):
-        if self.GetUserData().dir.isdir(path):
-            zipFileName = CreateZipOfDir(self.GetUserData().dir.GetAbsFilePath(path))
+        if self.GetDir().isdir(path):
+            zipFileName = CreateZipOfDir(self.GetDir().GetAbsFilePath(path))
             return serve_file(os.path.realpath(zipFileName), "application/x-download", "attachment")
         else:
-            return serve_file(self.GetUserData().dir.GetAbsFilePath(path), "application/x-download", "attachment")
+            return serve_file(self.GetDir().GetAbsFilePath(path), "application/x-download", "attachment")
     download.exposed = True
     
     def cd_impl(self, path):
         #time.sleep(1.5)
-        self.GetUserData().dir.cd(path)
+        self.GetDir().cd(path)
     
     def cd(self, path):
         self.cd_impl(path)
@@ -118,10 +148,11 @@ class FileBrowserController(object):
     
     def delete_impl(self, dirEntry):
         #time.sleep(5)
-        if self.GetUserData().dir.isdir(dirEntry):
-            self.GetUserData().dir.rmtree(dirEntry)
+        dir = self.GetDir()
+        if dir.isdir(dirEntry):
+            dir.rmtree(dirEntry)
         else:
-            self.GetUserData().dir.unlink(dirEntry)
+            dir.unlink(dirEntry)
 
     def delete(self, dirEntry):
         self.delete_impl(dirEntry)
@@ -142,19 +173,18 @@ class FileBrowserController(object):
     
     def rename_js(self, dirEntry, newName):
         #time.sleep(1.5)
-        self.GetUserData().dir.rename(dirEntry, newName)
+        self.GetDir().rename(dirEntry, newName)
         return self.view.render_dir_view()
     rename_js.exposed = True
     
     def mkdir_js(self, newName):
         #time.sleep(1.5)
-        self.GetUserData().dir.mkdir(newName)
+        self.GetDir().mkdir(newName)
         return self.view.render_dir_view()
     mkdir_js.exposed = True
     
     def login(self):
-        user_data = self.GetUserData()
-        if user_data:
+        if GetUserData():
             raise cherrypy.HTTPRedirect("/")
         return self.view.render_login_view()
     login.exposed = True
@@ -171,7 +201,6 @@ class FileBrowserController(object):
         try:
             user = User(username)
             if user.authenticate(password):
-                self.current_user_id = user.user_id
                 cherrypy.session['user_id'] = user.user_id
                 return "OK"
         except UserException, e:
@@ -180,8 +209,8 @@ class FileBrowserController(object):
     authenticate.exposed = True
     
     def logout(self):
-        cherrypy.session['user_id'] = None
-        self.ClearUserData()
+        GetSessionData().ClearUser()
+        ClearSessionData()
         raise cherrypy.HTTPRedirect("/")
     logout.exposed = True
 

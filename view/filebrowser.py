@@ -10,16 +10,14 @@ class FileBrowserView(object):
         self.controller = controller
 
     def render_index(self):
-        user = self.controller.GetUserData().GetUser()
-        username = user.username
-        print "Rendering index.html with username '%s'" % username
         tmpl = lookup.get_template("index.html")
         return tmpl.render(view=self, path=self.render_path())
 
     def render_path(self):
         html = ''
-        parts = self.controller.GetUserData().dir.path.split('/')
-        if len(self.controller.GetUserData().dir.path) > 0 and len(parts) > 0:
+        dir = self.controller.GetDir()
+        parts = dir.path.split('/')
+        if len(dir.path) > 0 and len(parts) > 0:
             html += '<a href="cd?path=/" onclick=\'onClickDirEntry("/");return false\'>[root]</a>'
         else:
             html += '[root]'
@@ -34,7 +32,7 @@ class FileBrowserView(object):
     
     def render_dir_listing(self):
         tmpl = lookup.get_template("dir_listing.html")
-        dirEntries = self.controller.GetUserData().dir.GetDirEntries()
+        dirEntries = self.controller.GetDir().GetDirEntries()
         dirEntries = sorted(dirEntries, key=attrgetter('isfile', 'entryName'))
         return tmpl.render(view=self, entries=dirEntries)
         
