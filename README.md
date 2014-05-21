@@ -13,7 +13,7 @@ approaches. Keep that in mind if you are new to
 JavaScript or CherryPy. If you are experienced and
 know better, please send me a diff with any
 improvements I could make. That will help me
-others using this project learn better.
+and others using this project learn better.
 
 Thanks,
 
