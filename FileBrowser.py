@@ -193,6 +193,7 @@ class FileBrowserController(object):
     def signup(self, username, password, email):
         try:
             user = User.create(username, password, email)
+            os.mkdir(user.home_directory)
             return "OK"
         except UserException, e:
             return e.message
@@ -201,7 +202,6 @@ class FileBrowserController(object):
     def authenticate(self, username, password):
         try:
             user = User(username)
-            os.mkdir(user.home_directory)
             if user.authenticate(password):
                 cherrypy.session['user_id'] = user.user_id
                 return "OK"
