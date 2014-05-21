@@ -55,14 +55,10 @@ class SessionData:
         
     def GetUser(self):
         if self.user:
-            print 'Returning user %d' % self.user.user_id
             return self.user;
         if not cherrypy.session.get('user_id'):
-            print 'No user set'
             return None
-        print 'Creating new user object for user %d' % cherrypy.session.get('user_id') 
         self.user = User(cherrypy.session.get('user_id'))
-        print 'Returning user %d' % self.user.user_id
         return self.user
     
     def ClearUser(self):
@@ -182,7 +178,6 @@ class FileBrowserController(object):
     delete.exposed = True
 
     def delete_js(self, dirEntry):
-        print 'Deleteing "%s"' % dirEntry
         self.delete_impl(dirEntry)
         return self.view.render_dir_view()
     delete_js.exposed = True
