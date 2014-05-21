@@ -18,10 +18,7 @@ def zipdir(path, zip):
         for file in files:
             zip.write(os.path.join(root, file))
 
-def CreateZipOfDir(path):
-    parts = path.split('/')
-    zipFileName = parts[-1] + ".zip"
-    baseDir = string.join(parts[:-1], '/')
+def GetZipDir():
     cwd = os.path.realpath('./')
     zipsPath = os.path.join(cwd, 'zips')
     zipsPath = os.path.join(zipsPath, GetUserData().username)
@@ -30,7 +27,15 @@ def CreateZipOfDir(path):
     zipsPath = os.path.join(zipsPath, cherrypy.session.id)
     if not os.path.exists(zipsPath):
         os.mkdir(zipsPath)
+    return zipsPath
+
+def CreateZipOfDir(path):
+    parts = path.split('/')
+    zipFileName = parts[-1] + ".zip"
+    baseDir = string.join(parts[:-1], '/')
+    zipsPath = GetZipDir()
     zipFileName = os.path.join(zipsPath, zipFileName)
+    cwd = os.path.realpath('./')
     os.chdir(baseDir)
     try:
         with ZipFile(zipFileName, "w") as zip:
@@ -61,6 +66,10 @@ class SessionData:
         return self.user
     
     def ClearUser(self):
+        dir = GetZipDir()
+        if os.path.isdir(dir):
+            # Remove the session dir.
+            os.rmdir(dir)
         cherrypy.session.pop('user_id')
         self.user = None
         self.dir = None
@@ -131,12 +140,16 @@ class FileBrowserController(object):
         return self.view.render_upload()
     show_upload_js.exposed = True
 
+    def download_complete(self):
+        os.unlink(cherrypy.request.zipFileName)
+
     def download(self, path):
         if self.GetDir().isdir(path):
             zipFileName = CreateZipOfDir(self.GetDir().GetAbsFilePath(path))
-            result = cherrypy.lib.static.serve_download(os.path.realpath(zipFileName))
-            print 'serve_file returned "%s"' % result
-            return result
+            zipFileName = os.path.realpath(zipFileName)
+            cherrypy.request.zipFileName = zipFileName
+            cherrypy.request.hooks.attach('on_end_request', self.download_complete)
+            return cherrypy.lib.static.serve_download(zipFileName)
         else:
             return cherrypy.lib.static.serve_download(self.GetDir().GetAbsFilePath(path))
     download.exposed = True
