@@ -46,8 +46,19 @@ def CreateZipOfDir(path):
 
 class SessionData:
     def __init__(self):
+        cherrypy.log('Creating new session data')
         self.user = None
         self.dir = None
+        self.files_to_copy = set()
+        self.files_to_cut = set()
+    
+    def AddFilesToCopy(self, files):
+        for file in files:
+            self.files_to_copy.add(file)
+    
+    def AddFilesToCut(self, files):
+        for file in files:
+            self.files_to_cut.add(file)
     
     def SetUserId(self, user_id):
         self.ClearUserId()
@@ -77,6 +88,7 @@ class SessionData:
             return None
         if self.dir:
             return self.dir
+        cherrypy.log('Creating new directory object')
         self.dir = Directory(user.home_directory)
         return self.dir
 
@@ -84,12 +96,14 @@ session_data = {}
 
 def GetSessionData():
     session_id = cherrypy.session.id
+    cherrypy.log('Retrieving session data for session %s' % session_id)
     if not session_data.has_key(session_id):
         session_data[session_id] = SessionData()
     return session_data[session_id]
 
 def ClearSessionData():
     session_id = cherrypy.session.id
+    cherrypy.log('Clearing session data for session %s' % session_id)
     if session_data.has_key(session_id):
         del session_data[session_id]
         
@@ -102,7 +116,10 @@ class FileBrowserController(object):
     def __init__(self):
         self.view = FileBrowserView(self)
         self.user_data = {}
-        
+    
+    def GetSessionData(self):
+        return GetSessionData()
+    
     def GetDir(self):
         return GetSessionData().GetDir()
     
@@ -231,6 +248,20 @@ class FileBrowserController(object):
         ClearSessionData()
         raise cherrypy.HTTPRedirect("/")
     logout.exposed = True
+    
+    def select_for_copy_or_cut(self, operation, entries):
+        entriesList = entries.split(',')[:-1]
+        dir = self.GetDir()
+        entriesList = [dir.GetAbsFilePath(x) for x in entriesList]
+        session = GetSessionData()
+        if operation == "copy":
+            session.AddFilesToCopy(entriesList)
+            print session.files_to_copy
+        elif operation == "cut":
+            session.AddFilesToCut(entriesList)
+            print session.files_to_cut
+        return "OK";
+    select_for_copy_or_cut.exposed = True
 
 tutconf = os.path.join(os.path.dirname(__file__), 'file_browser.conf')
 

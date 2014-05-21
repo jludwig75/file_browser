@@ -299,3 +299,58 @@ function logout()
 	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 	xmlhttp.send();
 }
+
+function selectEntriesForCopyOrCut(operation)
+{
+	var entriesString = "operation=" + operation + "&entries=";
+	var checkBoxes = document.getElementsByClassName('select_checkbox');
+	var valuesChecked = 0;
+	for(var i = 0; checkBoxes[i]; ++i)
+	{
+		if (checkBoxes[i].checked)
+		{
+			valuesChecked++;
+			entriesString = entriesString + checkBoxes[i].value + ","; 
+			checkBoxes[i].checked = false;
+		}
+	}
+	
+	if (valuesChecked == 0)
+	{
+		return;
+	}
+
+	if(window.XMLHttpRequest)
+  	{// code for IE7+, Firefox, Chrome, Opera, Safari
+  		xmlhttp=new XMLHttpRequest();
+  	}
+	else
+  	{// code for IE6, IE5
+  		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  	}
+  	
+  	xmlhttp.onreadystatechange=function()
+  	{
+  		if (xmlhttp.readyState==4)
+    	{
+    		if (xmlhttp.status==200)
+    		{
+    		}
+    	}
+  	};
+  	
+	xmlhttp.open("POST", "select_for_copy_or_cut", true);
+	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	xmlhttp.send(entriesString);
+}
+
+function selectEntriesForCut()
+{
+	selectEntriesForCopyOrCut("cut");
+}
+
+
+function selectEntriesForCopy()
+{
+	selectEntriesForCopyOrCut("copy");
+}

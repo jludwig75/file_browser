@@ -3,6 +3,11 @@
 	<td style="border:0px;margin:0px;padding-left:10px;padding-right:30px">
 		<div id="entry_${dirEntry.entryName}">
 % if dirEntry.isdir:
+%	if dirEntry.entryName != '..':
+		<input class="select_checkbox" type="checkbox" name="selected_items" value="${dirEntry.entryName}">
+%   else:
+		<input type="checkbox" name="check_updir">
+%	endif
 		<img src="images/folder.png"/>
 		<a id="link_${dirEntry.entryName}" href="cd?path=${dirEntry.entryName}" onclick="onClickDirEntry('${dirEntry.entryName}');return false" title="Change to &quot;${dirEntry.entryName}&quot; directory">
 			<span id="file_${dirEntry.entryName}">
@@ -13,6 +18,7 @@
 		<a href="" onclick="onClickFileName('${dirEntry.entryName}', true);return false" title="Rename folder"><img src="images/rename.png"></a>
 %	endif
 % else:
+		<input class="select_checkbox" type="checkbox" name="selected_items" value="${dirEntry.entryName}">
 		<img src="images/file.jpg"/>
 		<span style="cursor:pointer;" id="file_${dirEntry.entryName}">
 			<span onclick="onClickFileName('${dirEntry.entryName}', false)" title="Rename file">

@@ -51,3 +51,7 @@ class FileBrowserView(object):
     def render_login_view(self):
         tmpl = lookup.get_template("login.html")
         return tmpl.render()
+
+    def render_copy_or_cut(self, operation):
+        tmpl = lookup.get_template("copy_or_cut.html")
+        return tmpl.render(view=self, operation=operation)

@@ -1,0 +1,30 @@
+<% 
+
+if operation == 'copy':
+    opName = 'Copy'
+else:
+   opName = 'Cut'
+   
+sessionData = view.controller.GetSessionData()
+
+if operation == 'copy':
+    files = list(sessionData.files_to_copy)
+else:
+    files = list(sessionData.files_to_cut)
+
+%>
+
+<tr>
+	<td>
+		<a href="" title="${opName} Selected Files and Folders" onclick="selectEntriesForCopyOrCut('${operation}');return false"><img src="images/${operation}.png"/></a>
+		<a href="" title="${opName} Selected Files and Folders" onclick="selectEntriesForCopyOrCut('${operation}');return false">${opName}</a>
+	</td>
+% if len(files) > 0:
+	<td>
+		<a href="" title="Paste Selected Files and Folders Here" onclick="selectEntriesForCopyOrCut('${operation}');return false"><img src="images/paste.png"/></a>
+	</td>
+	<td>
+		${len(files)} file(s) or folder(s)
+	</td>
+% endif
+</tr>
