@@ -33,7 +33,7 @@
 				</table>
 			</form>
 			Not yet a user?
-			<a href="" onclick="document.getElementById('login').style.display='none';document.getElementById('signup').style.display='block';return false;">Sign Up</a>
+			<a href="" onclick="document.getElementById('login').style.display='none';document.getElementById('signup').style.display='block';document.getElementById('new-username').focus();return false;">Sign Up</a>
 		</div>
 		<div id="signup" style="display:none">
 			<h2>Sign Up as New User</h2>
@@ -81,8 +81,11 @@
 				</table>
 			</form>
 			Already a user?
-			<a href="" onclick="document.getElementById('login').style.display='block';document.getElementById('signup').style.display='none';return false;">Login</a>
+			<a href="" onclick="document.getElementById('login').style.display='block';document.getElementById('signup').style.display='none';document.getElementById('username').focus();return false;">Login</a>
 		</div>
 		<script src="scripts/browser.js"></script>
+		<script>
+			document.getElementById("username").focus();
+		</script>
 	</body>
 </html>

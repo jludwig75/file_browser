@@ -24,6 +24,12 @@ def CreateZipOfDir(path):
     baseDir = string.join(parts[:-1], '/')
     cwd = os.path.realpath('./')
     zipsPath = os.path.join(cwd, 'zips')
+    zipsPath = os.path.join(zipsPath, GetUserData().username)
+    if not os.path.exists(zipsPath):
+        os.mkdir(zipsPath)
+    zipsPath = os.path.join(zipsPath, cherrypy.session.id)
+    if not os.path.exists(zipsPath):
+        os.mkdir(zipsPath)
     zipFileName = os.path.join(zipsPath, zipFileName)
     os.chdir(baseDir)
     try:
@@ -128,9 +134,11 @@ class FileBrowserController(object):
     def download(self, path):
         if self.GetDir().isdir(path):
             zipFileName = CreateZipOfDir(self.GetDir().GetAbsFilePath(path))
-            return serve_file(os.path.realpath(zipFileName), "application/x-download", "attachment")
+            result = cherrypy.lib.static.serve_download(os.path.realpath(zipFileName))
+            print 'serve_file returned "%s"' % result
+            return result
         else:
-            return serve_file(self.GetDir().GetAbsFilePath(path), "application/x-download", "attachment")
+            return cherrypy.lib.static.serve_download(self.GetDir().GetAbsFilePath(path))
     download.exposed = True
     
     def cd_impl(self, path):
