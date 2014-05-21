@@ -60,12 +60,13 @@ class SessionData:
         self.dir = None
     
     def GetDir(self):
-        if not self.GetUser():
+        user = self.GetUser()
+        if not user:
             self.dir = None
             return None
         if self.dir:
             return self.dir
-        self.dir = Directory('/datastore')
+        self.dir = Directory(user.home_directory)
         return self.dir
 
 session_data = {}
@@ -200,6 +201,7 @@ class FileBrowserController(object):
     def authenticate(self, username, password):
         try:
             user = User(username)
+            os.mkdir(user.home_directory)
             if user.authenticate(password):
                 cherrypy.session['user_id'] = user.user_id
                 return "OK"

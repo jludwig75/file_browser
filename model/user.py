@@ -38,6 +38,8 @@ class User:
                     c = db.cursor(MySQLdb.cursors.DictCursor)
                     c.execute(query)
                     rows = c.fetchall()
+                    if len(rows) == 0:
+                        raise UserException('Unknown user %s' % id_or_name)
                     data = rows[0]
                     self.user_id = data["id"]
                     self.username = data["username"]
@@ -65,11 +67,11 @@ class User:
         user.email = email
         user.password_salt = uuid.uuid4().hex
         user.password_hash = hashlib.sha512(password + user.password_salt).hexdigest()
-        user.home_directory = None
+        user.home_directory = '/datastore/' + user.username
         user.verified = False
         
         # Create the new user in the database
-        query = 'INSERT INTO users (username, password_hash, password_salt, email, verified) VALUES ("%s", "%s", "%s", "%s", 1);' % (user.username, user.password_hash, user.password_salt, user.email)
+        query = 'INSERT INTO users (username, password_hash, password_salt, email, home_directory, verified) VALUES ("%s", "%s", "%s", "%s", "%s", 1);' % (user.username, user.password_hash, user.password_salt, user.email, user.home_directory)
         try:
             db = MySQLdb.connect(user='root', passwd='bitwise', db='file_browser')
             with db:
