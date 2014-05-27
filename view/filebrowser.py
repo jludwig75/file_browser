@@ -55,3 +55,7 @@ class FileBrowserView(object):
     def render_copy_or_cut(self, operation):
         tmpl = lookup.get_template("copy_or_cut.html")
         return tmpl.render(view=self, operation=operation)
+
+    def render_copy_and_cut(self):
+        tmpl = lookup.get_template("copy_and_cut.html")
+        return tmpl.render(view=self)

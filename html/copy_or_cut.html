@@ -14,17 +14,18 @@ else:
 
 %>
 
-<tr>
-	<td>
-		<a href="" title="${opName} Selected Files and Folders" onclick="selectEntriesForCopyOrCut('${operation}');return false"><img src="images/${operation}.png"/></a>
-		<a href="" title="${opName} Selected Files and Folders" onclick="selectEntriesForCopyOrCut('${operation}');return false">${opName}</a>
-	</td>
+<td>
+	<a href="" title="${opName} selected Files and Folders" onclick="selectEntriesForCopyOrCut('${operation}');return false"><img src="images/${operation}.png"/></a>
+	<a href="" title="${opName} selected Files and Folders" onclick="selectEntriesForCopyOrCut('${operation}');return false">${opName}</a>
+</td>
 % if len(files) > 0:
-	<td>
-		<a href="" title="Paste Selected Files and Folders Here" onclick="selectEntriesForCopyOrCut('${operation}');return false"><img src="images/paste.png"/></a>
-	</td>
-	<td>
-		${len(files)} file(s) or folder(s)
-	</td>
+<td>
+	<a href="" title="Paste selected Files and Folders Here" onclick="selectEntriesForCopyOrCut('${operation}');return false"><img src="images/paste.png"/></a>
+</td>
+<td>
+	${len(files)} file(s) or folder(s)
+</td>
+<td>
+	<a href="" title="Clear selected Files and Folders Here" onclick="clearEntriesForCopyOrCut('${operation}');return false"><img src="images/delete.png"/></a>
+</td>
 % endif
-</tr>

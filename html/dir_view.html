@@ -43,14 +43,9 @@
 							</div>
 						</td>
 						<td align="right">
-							<table>
-								<div id="file-copy">
-									${view.render_copy_or_cut('copy')}
-								</div>
-								<div id="file-cut">
-									${view.render_copy_or_cut('cut')}
-								</div>
-							</table>
+							<div id="copy-and-cut">
+								${view.render_copy_and_cut()}
+							</div>
 						</td>
 					</tr>
 				</table>

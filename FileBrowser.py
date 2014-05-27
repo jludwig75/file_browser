@@ -60,6 +60,12 @@ class SessionData:
         for file in files:
             self.files_to_cut.add(file)
     
+    def ClearFilesToCopy(self):
+        self.files_to_copy.clear()
+    
+    def ClearFilesToCut(self):
+        self.files_to_cut.clear()
+    
     def SetUserId(self, user_id):
         self.ClearUserId()
         cherrypy.session.get['user_id'] = user_id
@@ -260,8 +266,18 @@ class FileBrowserController(object):
         elif operation == "cut":
             session.AddFilesToCut(entriesList)
             print session.files_to_cut
-        return "OK";
+        return self.view.render_copy_and_cut();
     select_for_copy_or_cut.exposed = True
+    
+    def clear_select_for_copy_or_cut(self, operation):
+        print 'clear_select_for_copy_or_cut() called.'
+        session = GetSessionData()
+        if operation == "copy":
+            session.ClearFilesToCopy()
+        elif operation == "cut":
+            session.ClearFilesToCut()
+        return self.view.render_copy_and_cut();
+    clear_select_for_copy_or_cut.exposed = True
 
 tutconf = os.path.join(os.path.dirname(__file__), 'file_browser.conf')
 
