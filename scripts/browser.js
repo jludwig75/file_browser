@@ -371,3 +371,30 @@ function clearEntriesForCopyOrCut(operation)
 	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 	xmlhttp.send("operation=" + operation);
 }
+
+function onClickPaste(operation)
+{
+	var cdTimeOut = setTimeout(function(){displayPleaseWait("Please wait. Changing to '"  + entryName + "' directory...");}, 250);
+	
+	if(window.XMLHttpRequest)
+  	{// code for IE7+, Firefox, Chrome, Opera, Safari
+  		xmlhttp=new XMLHttpRequest();
+  	}
+	else
+  	{// code for IE6, IE5
+  		xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  	}
+  	
+  	xmlhttp.onreadystatechange=function()
+  	{
+  		if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    	{
+    		window.clearTimeout(cdTimeOut);
+    		document.getElementById("dir_view").innerHTML=xmlhttp.responseText;
+    	}
+  	};
+  	
+	xmlhttp.open("GET","paste?operation=" + operation, true);
+	xmlhttp.send();
+}
+

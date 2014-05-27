@@ -1,5 +1,6 @@
 import os
 import time
+import shutil
 from zipfile import ZipFile
 localDir = os.path.dirname(__file__)
 absDir = os.path.join(os.getcwd(), localDir)
@@ -99,6 +100,25 @@ class SessionData:
         return self.dir
 
 session_data = {}
+
+
+def copy_or_move_files_to_dest(files, dest, copy):
+    for file in files:
+        dir, fileName = os.path.split(file)
+        if os.path.normpath(dir) == os.path.normpath(dest):
+            index = 0
+            while os.path.exists(os.path.join(dest, fileName)):
+                index += 1
+                fileName = "Copy " + index + " of " + fileName
+        destPath = os.path.join(dest, fileName)
+        if copy:
+            if os.path.isdir(file):
+                shutil.copytree(file, destPath)
+            else:
+                shutil.copy(file, destPath)
+        else:
+            os.rename(file, destPath)
+            
 
 def GetSessionData():
     session_id = cherrypy.session.id
@@ -278,6 +298,22 @@ class FileBrowserController(object):
             session.ClearFilesToCut()
         return self.view.render_copy_and_cut();
     clear_select_for_copy_or_cut.exposed = True
+    
+    def paste(self, operation):
+        session = GetSessionData()
+        dir = self.GetDir()
+        if operation == "copy":
+            files = list(session.files_to_copy)
+            print 'Copying files: %s' % files
+            copy_or_move_files_to_dest(files, dir.GetAbsPath(), True)
+            session.ClearFilesToCopy()
+        elif operation == "cut":
+            files = list(session.files_to_cut)
+            print 'Moving files: %s' % files
+            copy_or_move_files_to_dest(files, dir.GetAbsPath(), False)
+            session.ClearFilesToCut()
+        return self.view.render_dir_view();
+    paste.exposed = True
 
 tutconf = os.path.join(os.path.dirname(__file__), 'file_browser.conf')
 
