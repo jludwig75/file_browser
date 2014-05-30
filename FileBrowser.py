@@ -69,7 +69,7 @@ class SessionData:
     
     def SetUserId(self, user_id):
         self.ClearUserId()
-        cherrypy.session.get['user_id'] = user_id
+        cherrypy.session['user_id'] = user_id
         
     def GetUser(self):
         if self.user:
